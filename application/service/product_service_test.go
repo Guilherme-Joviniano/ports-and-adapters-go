@@ -1,10 +1,10 @@
-package application_test
+package service_test
 
 import (
 	"testing"
 
-	"github.com/Guilherme-Joviniano/go-hexagonal/application"
-	mock_application "github.com/Guilherme-Joviniano/go-hexagonal/application/mocks"
+	"github.com/Guilherme-Joviniano/go-hexagonal/application/service"
+	mock_domain "github.com/Guilherme-Joviniano/go-hexagonal/mock/domain"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
 )
@@ -13,12 +13,12 @@ func TestApplicationProductService_Get(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	product := mock_application.NewMockProductInterface(ctrl)
-	persistence := mock_application.NewMockProductPersistenceInterface(ctrl)
+	product := mock_domain.NewMockProductInterface(ctrl)
+	persistence := mock_domain.NewMockProductPersistenceInterface(ctrl)
 
 	persistence.EXPECT().Get(gomock.Any()).Return(product, nil).AnyTimes()
 
-	service := application.ProductService{
+	service := service.ProductService{
 		Persistence: persistence,
 	}
 
@@ -30,13 +30,13 @@ func TestApplicationProductService_Get(t *testing.T) {
 
 func TestApplicationProductService_Save(t *testing.T) {
 	ctrl := gomock.NewController(t)
-	product := mock_application.NewMockProductInterface(ctrl)
+	product := mock_domain.NewMockProductInterface(ctrl)
 
-	persistence := mock_application.NewMockProductPersistenceInterface(ctrl)
+	persistence := mock_domain.NewMockProductPersistenceInterface(ctrl)
 
 	persistence.EXPECT().Save(gomock.Any()).Return(product, nil).AnyTimes()
 
-	service := application.ProductService{
+	service := service.ProductService{
 		Persistence: persistence,
 	}
 
@@ -46,17 +46,16 @@ func TestApplicationProductService_Save(t *testing.T) {
 	require.Equal(t, result, product)
 }
 
-
 func TestApplicationProductService_Enable(t *testing.T) {
 	ctrl := gomock.NewController(t)
-	product := mock_application.NewMockProductInterface(ctrl)
+	product := mock_domain.NewMockProductInterface(ctrl)
 	product.EXPECT().Enable().Return(nil)
 
-	persistence := mock_application.NewMockProductPersistenceInterface(ctrl)
+	persistence := mock_domain.NewMockProductPersistenceInterface(ctrl)
 
 	persistence.EXPECT().Save(gomock.Any()).Return(product, nil).AnyTimes()
 
-	service := application.ProductService{
+	service := service.ProductService{
 		Persistence: persistence,
 	}
 
@@ -68,14 +67,14 @@ func TestApplicationProductService_Enable(t *testing.T) {
 
 func TestApplicationProductService_Disable(t *testing.T) {
 	ctrl := gomock.NewController(t)
-	product := mock_application.NewMockProductInterface(ctrl)
+	product := mock_domain.NewMockProductInterface(ctrl)
 	product.EXPECT().Enable().Return(nil)
 
-	persistence := mock_application.NewMockProductPersistenceInterface(ctrl)
+	persistence := mock_domain.NewMockProductPersistenceInterface(ctrl)
 
 	persistence.EXPECT().Save(gomock.Any()).Return(product, nil).AnyTimes()
 
-	service := application.ProductService{
+	service := service.ProductService{
 		Persistence: persistence,
 	}
 

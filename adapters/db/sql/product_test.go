@@ -5,8 +5,8 @@ import (
 	"log"
 	"testing"
 
-	"github.com/Guilherme-Joviniano/go-hexagonal/adapters/db"
-	"github.com/Guilherme-Joviniano/go-hexagonal/application"
+	db "github.com/Guilherme-Joviniano/go-hexagonal/adapters/db/sql"
+	"github.com/Guilherme-Joviniano/go-hexagonal/application/domain"
 	"github.com/stretchr/testify/require"
 )
 
@@ -65,9 +65,9 @@ func TestAdapterDbProductDbAdapter_Save(t *testing.T) {
 	defer Db.Close()
 
 	productDbAdapter := db.NewProductDbAdapter(Db)
-	product := application.NewProduct("test", 10)
+	product := domain.NewProduct("test", 10)
 	result, err := productDbAdapter.Save(product)
-	
+
 	require.Nil(t, err)
 
 	require.Equal(t, "test", result.GetName())

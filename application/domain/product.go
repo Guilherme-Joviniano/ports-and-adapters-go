@@ -1,4 +1,4 @@
-package application
+package domain
 
 import (
 	"errors"
@@ -53,11 +53,6 @@ type Product struct {
 	Price  float32 `valid:"float,optional"`
 }
 
-// Enable implements ProductInterface.
-func (*Product) Enable() error {
-	panic("unimplemented")
-}
-
 func (p *Product) IsValid() (bool, error) {
 	if p.Status == "" {
 		p.Status = DISABLED
@@ -80,7 +75,7 @@ func (p *Product) IsValid() (bool, error) {
 	return true, nil
 }
 
-func (p *Product) Enabled() error {
+func (p *Product) Enable() error {
 	if p.Price > 0 {
 		p.Status = ENABLED
 		return nil

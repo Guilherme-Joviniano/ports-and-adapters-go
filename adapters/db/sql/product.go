@@ -3,7 +3,7 @@ package db
 import (
 	"database/sql"
 
-	"github.com/Guilherme-Joviniano/go-hexagonal/application"
+	"github.com/Guilherme-Joviniano/go-hexagonal/application/domain"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -17,8 +17,8 @@ func NewProductDbAdapter(db *sql.DB) *ProductDbAdapter {
 	}
 }
 
-func (p *ProductDbAdapter) Get(id string) (application.ProductInterface, error) {
-	var product application.Product
+func (p *ProductDbAdapter) Get(id string) (domain.ProductInterface, error) {
+	var product domain.Product
 
 	statement, err := p.db.Prepare("select id, name, price, status from products where id =?")
 
@@ -35,11 +35,11 @@ func (p *ProductDbAdapter) Get(id string) (application.ProductInterface, error) 
 	return &product, nil
 }
 
-func (p *ProductDbAdapter) Save(product application.ProductInterface) (application.ProductInterface, error) {	
+func (p *ProductDbAdapter) Save(product domain.ProductInterface) (domain.ProductInterface, error) {
 	var rows int
-	
+
 	p.db.QueryRow("select id from products where id = ?", product.GetID()).Scan(&rows)
-	
+
 	if rows == 0 {
 		_, err := p.create(product)
 
@@ -60,7 +60,7 @@ func (p *ProductDbAdapter) Save(product application.ProductInterface) (applicati
 
 }
 
-func (p *ProductDbAdapter) create(product application.ProductInterface) (application.ProductInterface, error) {
+func (p *ProductDbAdapter) create(product domain.ProductInterface) (domain.ProductInterface, error) {
 	statement, err := p.db.Prepare("insert into products(id, name, price, status) values (?,?,?,?)")
 
 	if err != nil {
@@ -81,7 +81,7 @@ func (p *ProductDbAdapter) create(product application.ProductInterface) (applica
 	return product, nil
 }
 
-func (p *ProductDbAdapter) update(product application.ProductInterface) (application.ProductInterface, error) {
+func (p *ProductDbAdapter) update(product domain.ProductInterface) (domain.ProductInterface, error) {
 	_, err := p.db.Exec("update products set id = ?, name = ?, price = ?, status = ?", product.GetID(), product.GetName(), product.GetPrice(), product.GetStatus())
 
 	if err != nil {
