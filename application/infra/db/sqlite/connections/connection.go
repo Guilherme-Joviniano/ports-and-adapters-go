@@ -12,10 +12,8 @@ type Singleton struct {
 }
 
 var singletonInstance *Singleton
-var wg sync.WaitGroup
 
-func GetSqliteInstance(connection chan *sql.DB) {
-	defer wg.Done()
+func GetSqliteInstance() *sql.DB {
 	if singletonInstance == nil {
 		once.Do(
 			func() {
@@ -29,5 +27,5 @@ func GetSqliteInstance(connection chan *sql.DB) {
 				}
 			})
 	}
-	connection <- singletonInstance.Connection
+	return singletonInstance.Connection
 }
