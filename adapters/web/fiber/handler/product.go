@@ -7,14 +7,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func MakeProductHandler(router *fiber.App, service domain.ProductServiceInterface) {
-	router.Post("/products", createProductHandler(service))
-	router.Get("/products/:id", getProductHandler(service))
-	router.Patch("/products/enable/:id", enableProductHandler(service))
-	router.Patch("/products/disable/:id", disableProductHandler(service))
-}
-
-func disableProductHandler(service domain.ProductServiceInterface) fiber.Handler {
+func DisableProductHandler(service domain.ProductServiceInterface) fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		ctx.Accepts("application/json")
 		id := ctx.Params("id")
@@ -35,7 +28,7 @@ func disableProductHandler(service domain.ProductServiceInterface) fiber.Handler
 	}
 }
 
-func enableProductHandler(service domain.ProductServiceInterface) fiber.Handler {
+func EnableProductHandler(service domain.ProductServiceInterface) fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		ctx.Accepts("application/json")
 		id := ctx.Params("id")
@@ -56,7 +49,7 @@ func enableProductHandler(service domain.ProductServiceInterface) fiber.Handler 
 	}
 }
 
-func createProductHandler(service domain.ProductServiceInterface) fiber.Handler {
+func CreateProductHandler(service domain.ProductServiceInterface) fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		p := dto.NewProduct()
 
@@ -74,7 +67,7 @@ func createProductHandler(service domain.ProductServiceInterface) fiber.Handler 
 	}
 }
 
-func getProductHandler(service domain.ProductServiceInterface) fiber.Handler {
+func GetProductHandler(service domain.ProductServiceInterface) fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		ctx.Accepts("application/json")
 		id := ctx.Params("id")

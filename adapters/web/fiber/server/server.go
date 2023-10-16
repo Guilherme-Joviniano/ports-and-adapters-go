@@ -2,36 +2,40 @@ package server
 
 import (
 	"log"
-	"time"
+	"os"
 
-	"github.com/Guilherme-Joviniano/go-hexagonal/adapters/web/fiber/handler"
-	"github.com/Guilherme-Joviniano/go-hexagonal/application/domain"
+	routes "github.com/Guilherme-Joviniano/go-hexagonal/adapters/web/fiber/routes/private"
+	"github.com/Guilherme-Joviniano/go-hexagonal/application/main/factories"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 )
 
+var address = os.Getenv("HTTP_ADDRESS")
+
 type WebServer struct {
-	Service domain.ProductServiceInterface
+	server *fiber.App
 }
 
 func MakeNewWebServer() *WebServer {
-	return &WebServer{}
+	server := fiber.New()
+	return &WebServer{
+		server: server,
+	}
 }
 
-func (w WebServer) Serve() {
+func (w *WebServer) Serve() {
+	w.server.Use(logger.New())
 
-	server := fiber.New(fiber.Config{
-		ReadTimeout:  10 * time.Second,
-		WriteTimeout: 10 * time.Second,
-	})
+	w.SetRoutes()
 
-	server.Use(logger.New())
-
-	handler.MakeProductHandler(server, w.Service)
-
-	err := server.Listen(":9000")
+	err := w.server.Listen(address)
 
 	if err != nil {
 		log.Fatal(err.Error())
 	}
+}
+
+func (w *WebServer) SetRoutes() {
+	productService := factories.MakeProductService()
+	routes.ProductRouter(w.server, productService)
 }
